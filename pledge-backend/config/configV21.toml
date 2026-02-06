@@ -1,0 +1,102 @@
+[mysql]
+# address = "50.18.79.42"
+address = "127.0.0.1"
+port = "3306"
+db_name = "pledge_v21"
+user_name = "root"
+password = "123456"
+max_open_conns = 0
+max_idle_conns = 0
+max_life_time = 0
+
+[redis]
+# address = "50.18.79.42"
+address = "127.0.0.1"
+port = "6379"
+db = 1
+user_name = "default"
+password = "123456"
+max_idle = 0
+max_active = 0
+idle_timeout = 0
+
+#[testnet]
+#chain_id = "11155111"
+#net_url = "https://ethereum-sepolia-rpc.publicnode.com"
+#plgr_address = "0x790B6C61Ca2f5E0275a6b0D47c9e8DDc6b479EeA"
+#pledge_pool_token = "0xbEd2F048532b859EA0272E87C07489ad7A1772DE"
+#bsc_pledge_oracle_token = "0xB574D61E7121320D708C6eC988c9CDEEc0cDDAEa"
+
+[testnet]
+# 1. 链 ID (Chain ID)
+# 作用: 标识这是哪条区块链。
+# 97 是 BSC Testnet (币安智能链测试网) 的唯一标识符。
+# 后端发交易时会带上这个 ID，如果连错了网（比如连到主网 ChainID 56），交易会被拒绝，防止误操作。
+chain_id = "97"
+
+# 2. RPC 节点地址 (Net URL)
+# 作用: 这是后端通往区块链世界的“大门”。
+# 后端通过这个 URL 发送查询请求（查余额、查合约状态）和广播交易。
+# 如果这个节点挂了或太慢，后端服务就会报错或卡顿。
+net_url = "https://data-seed-prebsc-1-s1.binance.org:8545"
+
+# 3. 平台币合约地址 (PLGR Address)
+# 作用: 指向 Pledge 平台的治理代币 (PLGR) 合约。
+# 后端需要这个地址来查询用户的 PLGR 余额，或者监听 PLGR 的转账事件。
+# (注: 你刚才的部署脚本里没有部署它，所以目前配置的是旧地址，如果要用得单独部署或用 spBUSD 替代)
+plgr_address = "0X6AA91CBFE045F9D154050226FCC830DDBA886CED"
+
+# 4. 借贷池核心合约地址 (Pledge Pool Token)
+# 作用: 指向 PledgePool.sol 合约的部署地址。
+# 虽然名字叫 "..._token"，但它其实是【业务逻辑主合约】。
+# 后端通过它来：
+# - 发现新创建的借贷池 (poolLength, poolBaseInfo)
+# - 监听 借款/存款/结算/清算 等核心业务事件
+pledge_pool_token = "0x7Dc7E440A25BeEF976B845BBE31E9A7E2d3E8EC6"
+
+# 5. 预言机合约地址 (BSC Pledge Oracle Token)
+# 作用: 指向 BscPledgeOracle.sol 合约的部署地址。
+# 后端通过它来：
+# - 读取当前资产价格 (getUnderlyingPrice)
+# - (作为管理员) 向链上喂价 (setPrice)
+bsc_pledge_oracle_token = "0x7fA7F0A4C0b6CD29e39D70B4FcD521eED87E1353"
+
+[mainnet]
+chain_id = "56"
+net_url = "https://bsc-dataseed.binance.org"
+plgr_address = "0x6aa91cbfe045f9d154050226fcc830ddba886ced"
+pledge_pool_token = "0x25C3f3d3E3299d7C56700CE54303Fbe1E6a16fee"
+bsc_pledge_oracle_token = "0x4Aa9EB3149089D7208C9C0403BF1b9bA25ff05BD"
+
+[token]
+logo_url = "https://tokens.pancakeswap.finance/pancakeswap-top-100.json"
+
+[defaultadmin]
+username = "admin"
+password = "password"
+
+[jwt]
+expire_time = 2592000
+secret_key = "243223ffslsfsldfl412fdsfsdf"
+
+[env]
+port = "8080"
+version = "21"
+protocol = "https"
+task_duration = 2
+task_extend_duration = 5
+wss_timeout_duration = 20
+domain_name = "118.195.185.245:8080"
+
+[threshold]
+pledge_pool_token_threshold_bnb = "100000000000000000"
+
+[email]
+username = "XXXX@gmail.com"
+pwd = "XXXX"
+host = "smtp.gmail.com"
+port = "587"
+from = "pledge beidge <test@gmail.com>"
+subject = "Insufficient balance of bridge account"
+to = ["XXXX@outlook.com"]
+cc = ["XXXX@126.com"]

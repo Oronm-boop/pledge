@@ -1,0 +1,364 @@
+.coin_pool {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  .coin_pool_box {
+    box-sizing: border-box;
+    width: 40.7%;
+    padding: 26px 28px 0;
+    border: 1px solid #e6e6eb;
+    border-radius: 20px;
+
+    .info_title1 {
+      font-size: 12px;
+    }
+
+    .fixed {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+      margin: 31px 0;
+      padding: 25px 18px;
+      border: 1px solid #e6e6eb;
+      border-radius: 15px;
+
+      .info_title1_num {
+        color: #262533;
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 36px;
+        text-align: center;
+      }
+
+      p {
+        margin: 0;
+        text-align: center;
+
+        span {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .ant-input-number-input-wrap > input {
+    padding: 0;
+  }
+
+  input::-webkit-input-placeholder {
+    color: #b5b3cc;
+    font-weight: 600;
+    font-size: 20px;
+  }
+
+  .ant-input-number-handler-wrap {
+    display: none;
+  }
+
+  .coin_pool_box_title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 22px;
+
+    h3 {
+      margin: 0 0 0 10px;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 30px;
+    }
+  }
+
+  .info_title,
+  .info_title1 {
+    color: #8b89a3;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .info_title {
+    display: flex;
+    justify-content: space-between;
+
+    span {
+      display: flex;
+      align-items: center;
+
+      span {
+        display: block;
+        width: 10px;
+        height: 10px;
+        margin-right: 8px;
+      }
+    }
+  }
+
+  .info_key {
+    display: flex;
+    justify-content: space-between;
+
+    .info_key_info {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+
+  .components_button {
+    border-radius: 15px !important;
+  }
+
+  .coin_pool_box2 {
+    box-sizing: border-box;
+    width: 52.7%;
+    padding: 28px;
+    border: 1px solid #e6e6eb;
+    border-radius: 20px;
+
+    .balance_input {
+      box-sizing: border-box;
+      margin-bottom: 10px;
+      padding: 18px;
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+
+      .ant-input-number-input {
+        font-size: 24px;
+      }
+
+      p {
+        color: #4f4e66;
+        font-size: 14px;
+        line-height: 21px;
+      }
+    }
+
+    .coin_pool_box2_title {
+      display: block;
+
+      .info_title2 {
+        color: #262533;
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 30px;
+      }
+    }
+  }
+
+  .lend_button .components_connect_wallet {
+    display: block;
+
+    .wallet_connected {
+      justify-content: center;
+      width: 100%;
+    }
+
+    .components_button {
+      margin-top: 60px;
+      border-bottom-left-radius: 30px;
+    }
+  }
+
+  .steps-action .components_connect_wallet {
+    display: block;
+
+    width: 48%;
+
+    margin-left: 0 !important;
+
+    .components_button {
+      width: 100%;
+      margin: 0;
+      border-radius: 15px;
+      border-bottom-left-radius: 30px;
+    }
+  }
+
+  .borrow_input {
+    box-sizing: border-box;
+    height: 72px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+
+    .ant-input-number-input {
+      color: #262533;
+      font-weight: bold;
+      font-size: 24px;
+      line-height: 36px;
+    }
+
+    .coin_pool_box_title {
+      display: flex;
+      align-items: center;
+      height: 28px;
+      margin-top: 22px;
+      padding: 0 8px;
+      border-left: 2px solid #e6e6eb;
+    }
+  }
+
+  .ant-progress-success-bg {
+    background-color: #ffa011;
+  }
+
+  .steps-content {
+    display: none;
+  }
+
+  .ant-steps-item-title {
+    padding: 0;
+    color: transparent !important;
+  }
+
+  .ant-steps-item-active {
+    display: block;
+
+    .ant-steps-item-icon {
+      background-color: #5d52ff;
+      border-color: #5d52ff;
+    }
+  }
+
+  .ant-steps-item-wait {
+    display: block;
+
+    .ant-steps-item-icon {
+      background-color: #e6e6eb;
+      border-color: #e6e6eb;
+
+      span {
+        color: #fff;
+      }
+    }
+  }
+
+  .ant-steps-item-title::after {
+    width: 326px;
+    margin-top: -4px;
+    margin-left: -9px;
+  }
+
+  .ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item {
+    padding: 0;
+  }
+
+  .ant-steps-item-icon {
+    width: 23px;
+    height: 23px;
+    margin: 0;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 23px;
+    border-radius: 50%;
+  }
+}
+@media only screen and (max-width: 576px) {
+  display: block;
+
+  .coin_pool {
+    display: block;
+
+    .info_title {
+      display: flex;
+
+      .total_lend {
+        display: none;
+      }
+    }
+
+    .balance_input {
+      display: block;
+
+      button {
+        font-size: 16px !important;
+      }
+    }
+
+    .coin_pool_box2 {
+      display: block;
+      padding: 20px;
+
+      .info_title2 {
+        font-size: 16px !important;
+        line-height: 24px;
+      }
+
+      h3 {
+        font-size: 16px;
+        line-height: 24px;
+      }
+
+      .coin_pool_box_title {
+        display: flex;
+
+        img {
+          width: 20px !important;
+          height: 20px !important;
+        }
+      }
+
+      .lend_button {
+        display: block;
+
+        .components_button {
+          width: 303px !important;
+          height: 40px !important;
+        }
+      }
+
+      p {
+        color: #8b89a3;
+        font-size: 12px;
+        line-height: 18px;
+
+        span {
+          font-size: 12px;
+        }
+      }
+
+      .info_title {
+        color: #8b89a3;
+        font-size: 14px;
+        line-height: 21px;
+      }
+
+      .info_key_info {
+        color: #262533;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 21px;
+        text-align: right;
+      }
+
+      .sp_jp {
+        width: 200px;
+        text-align: left;
+        word-wrap: break-word;
+      }
+
+      .components_button {
+        width: 144px !important;
+        height: 40px;
+        font-size: 14px;
+        line-height: 40px;
+      }
+    }
+
+    .coin_pool_box {
+      padding: 23px 20px 20px;
+
+      .info_title,
+      .info_key_info {
+        font-size: 14px;
+      }
+    }
+
+    .warning {
+      margin-left: 0 !important;
+      font-size: 10px;
+    }
+  }
+}

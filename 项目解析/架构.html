@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PledgeV2 项目通俗解析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap');
+        body { font-family: 'Noto Sans SC', sans-serif; background-color: #f3f4f6; }
+        .card { transition: all 0.3s ease; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .flow-arrow { position: relative; }
+        .flow-arrow::after {
+            content: '▼';
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #9ca3af;
+            font-size: 1.2rem;
+        }
+        .last-flow::after { content: ''; }
+        
+        .code-snippet {
+            background-color: #1e293b;
+            color: #a5b4fc;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            border-left: 4px solid #6366f1;
+        }
+        .highlight { color: #fbbf24; font-weight: bold; }
+        
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .blinking { animation: pulse-red 2s infinite; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-indigo-600 text-white p-6 shadow-lg">
+        <div class="max-w-5xl mx-auto">
+            <h1 class="text-3xl font-bold mb-2"><i class="fas fa-landmark mr-2"></i> PledgeV2 项目通俗解析</h1>
+            <p class="text-indigo-100">一个基于区块链的"智能数字当铺"系统架构分析</p>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto p-6">
+
+        <!-- Section 1: 核心概念 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-indigo-500 pl-4">1. 这个项目到底是干嘛的？</h2>
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="flex flex-col md:flex-row gap-6 items-center">
+                    <div class="flex-1">
+                        <p class="text-lg leading-relaxed mb-4">
+                            简单来说，<strong>PledgeV2 就是一个去中心化的"当铺"</strong>。
+                        </p>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fas fa-user-tag text-indigo-500 mt-1 mr-3"></i>
+                                <div>
+                                    <strong>借款人 (Borrower)：</strong> 手里有"资产"（比如 BTC/ETH），缺现金（USDT），但不想卖掉资产。于是把资产<strong>"抵押"</strong>给平台，借出现金。
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-hand-holding-usd text-green-500 mt-1 mr-3"></i>
+                                <div>
+                                    <strong>出借人 (Lender)：</strong> 手里有闲钱，想赚利息。把钱存入平台，借给别人。
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-robot text-red-500 mt-1 mr-3"></i>
+                                <div>
+                                    <strong>智能管理员 (Smart Contract)：</strong> 没有老板，由代码自动管理。如果抵押品价格大跌，代码会自动卖掉抵押品还钱（清算）。
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-1/3 bg-indigo-50 p-4 rounded-lg text-center">
+                        <div class="text-6xl text-indigo-600 mb-4"><i class="fas fa-balance-scale"></i></div>
+                        <div class="font-bold text-gray-700">核心逻辑</div>
+                        <div class="text-sm text-gray-500 mt-2">抵押品价值 > 借款价值</div>
+                        <div class="text-xs text-indigo-500 mt-1">(超额抵押保障安全)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: 系统架构角色 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-green-500 pl-4">2. 谁在负责什么？(架构拆解)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 核心业务 -->
+                <div class="card bg-white p-5 rounded-xl shadow-sm border-t-4 border-blue-500">
+                    <h3 class="font-bold text-lg mb-2"><i class="fas fa-university text-blue-500"></i> 柜台业务部</h3>
+                    <p class="text-sm text-gray-600 mb-2">负责具体的存钱、借钱、记账。</p>
+                    <div class="bg-gray-100 p-2 rounded text-xs font-mono">
+                        PledgePool.sol (借贷池)<br>
+                        DebtToken.sol (借条凭证)
+                    </div>
+                </div>
+                
+                <!-- 董事会 -->
+                <div class="card bg-white p-5 rounded-xl shadow-sm border-t-4 border-purple-500">
+                    <h3 class="font-bold text-lg mb-2"><i class="fas fa-users-cog text-purple-500"></i> 多签董事会</h3>
+                    <p class="text-sm text-gray-600 mb-2">负责开新店（创建池子）、修改规则。需要多人签名才能生效，防止单人作恶。</p>
+                    <div class="bg-gray-100 p-2 rounded text-xs font-mono">
+                        multiSignature.sol (多签钱包)<br>
+                        AddressPrivileges.sol (权限)
+                    </div>
+                </div>
+
+                <!-- 外部顾问 -->
+                <div class="card bg-white p-5 rounded-xl shadow-sm border-t-4 border-yellow-500">
+                    <h3 class="font-bold text-lg mb-2"><i class="fas fa-eye text-yellow-500"></i> 报价员 & 交易所</h3>
+                    <p class="text-sm text-gray-600 mb-2">负责告诉系统现在的金价（币价）是多少，以及负责在清算时变卖资产。</p>
+                    <div class="bg-gray-100 p-2 rounded text-xs font-mono">
+                        BscPledgeOracle (预言机)<br>
+                        UniswapV2Router (去中心化交易所)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: 计算示例 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-orange-500 pl-4">3. 算算你能借多少钱？</h2>
+            <div class="bg-orange-50 p-6 rounded-xl border border-orange-200">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center items-center">
+                    <!-- Step 1 -->
+                    <div>
+                        <div class="text-4xl text-orange-400 mb-2"><i class="fab fa-bitcoin"></i></div>
+                        <div class="font-bold">你的抵押品</div>
+                        <div class="text-sm text-gray-500 mt-1">例如: 1 BTC</div>
+                        <div class="text-lg font-bold text-gray-800 mt-2">价值 $60,000</div>
+                    </div>
+                    
+                    <!-- Operator -->
+                    <div class="flex flex-col items-center justify-center">
+                        <div class="text-2xl font-mono text-gray-400 mb-1">÷</div>
+                        <div class="bg-white px-4 py-2 rounded shadow-sm border border-orange-200">
+                            <div class="text-xs text-gray-400 uppercase">MartgageRate</div>
+                            <div class="text-xl font-bold text-orange-600">200%</div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-2">系统设定的"安全系数"</div>
+                    </div>
+
+                    <!-- Result -->
+                    <div>
+                        <div class="text-4xl text-green-500 mb-2"><i class="fas fa-money-bill-wave"></i></div>
+                        <div class="font-bold">你能借到的钱</div>
+                        <div class="text-sm text-gray-500 mt-1">安全借款额度</div>
+                        <div class="text-lg font-bold text-gray-800 mt-2">= $30,000</div>
+                    </div>
+                </div>
+
+                <div class="mt-6 border-t border-orange-200 pt-4">
+                    <div class="code-snippet bg-white border-l-4 border-orange-400 text-gray-700">
+                        <span class="text-gray-400">// 核心代码逻辑</span><br>
+                        uint256 totalValue = 抵押品数量 * 价格; <span class="text-green-600">// $60,000</span><br>
+                        uint256 actualValue = totalValue * (1 / <span class="text-orange-600">martgageRate</span>); <span class="text-green-600">// $60,000 ÷ 2 = $30,000</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">
+                        <i class="fas fa-info-circle text-orange-400"></i> 
+                        <strong>通俗理解：</strong> 抵押率为 200% 意味着你需要抵押 <strong>2块钱</strong> 的东西，才能借出 <strong>1块钱</strong>。多出来的那1块钱是防止价格波动的"安全垫"。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: 清算解析 (New) -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-red-600 pl-4">4. 残酷的现实：什么是清算？为什么要清算？</h2>
+            <div class="bg-red-50 p-6 rounded-xl border border-red-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="font-bold text-xl text-red-700 mb-3"><i class="fas fa-shield-alt"></i> 为什么要清算？</h3>
+                        <p class="text-gray-700 mb-4">
+                            想象一下，你用价值 <strong>150元</strong> 的金戒指在当铺借了 <strong>100元</strong>。
+                        </p>
+                        <p class="text-gray-700 mb-4">
+                            突然金价大跌，你的戒指只值 <strong>105元</strong> 了。当铺老板会非常紧张：万一跌到 90元，你肯定不会来赎回戒指了（因为还100元换回90元的东西不划算），那老板就亏本了（<strong>坏账</strong>）。
+                        </p>
+                        <div class="bg-white p-4 rounded shadow-sm border-l-4 border-red-500">
+                            <p class="font-bold text-gray-800">核心目的：保护出借人的钱</p>
+                            <p class="text-sm text-gray-600 mt-1">清算就是系统为了防止亏本，在抵押品价值跌到"资不抵债"之前，强制卖掉抵押品还债的操作。</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="font-bold text-xl text-red-700 mb-3"><i class="fas fa-chart-line"></i> 什么时候触发？</h3>
+                        <div class="space-y-4">
+                            <!-- Progress Bar 1: Healthy -->
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>健康状态 (金价高)</span>
+                                    <span class="text-green-600 font-bold">安全</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-4 relative">
+                                    <div class="bg-green-500 h-4 rounded-full" style="width: 80%"></div> <!-- Collateral -->
+                                    <div class="absolute top-0 left-0 h-4 border-r-2 border-black" style="width: 50%"></div> <!-- Debt Line -->
+                                    <span class="absolute top-5 left-1/2 transform -translate-x-1/2 text-xs text-gray-500">借款额 (50%)</span>
+                                </div>
+                            </div>
+
+                            <!-- Progress Bar 2: Danger -->
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>危险状态 (金价跌)</span>
+                                    <span class="text-red-600 font-bold blinking">触发清算!</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-4 relative">
+                                    <div class="bg-red-500 h-4 rounded-full" style="width: 55%"></div> <!-- Collateral shrank -->
+                                    <div class="absolute top-0 left-0 h-4 border-r-2 border-black" style="width: 50%"></div> <!-- Debt Line same -->
+                                    <span class="absolute top-5 left-1/2 transform -translate-x-1/2 text-xs text-gray-500">清算线 (约55%)</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 code-snippet bg-white text-gray-700 border border-gray-200">
+                            <span class="text-gray-400">// 代码中的触发公式 (checkoutLiquidate)</span><br>
+                            <span class="text-purple-600">if</span> (当前抵押品价值 < 借款金额 * 1.1) {<br>
+                            &nbsp;&nbsp; <span class="text-red-600 font-bold">return true;</span> <span class="text-gray-400">// 动手！卖！</span><br>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: 生命周期故事 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">5. 一个借贷池的一生 (核心流程)</h2>
+            
+            <div class="space-y-8">
+                
+                <!-- Step 1: Matching -->
+                <div class="flex flex-col md:flex-row gap-4 flow-arrow">
+                    <div class="md:w-16 flex-shrink-0 flex items-center justify-center">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">1</div>
+                    </div>
+                    <div class="flex-1 bg-white p-5 rounded-xl shadow-sm">
+                        <h3 class="font-bold text-lg text-blue-700">匹配阶段 (Match)</h3>
+                        <p class="text-gray-600 text-sm mt-2">
+                            就像开业大吉。出借人把钱放进来（DepositLend），借款人把抵押品放进来（DepositBorrow）。这时候还没正式借出去，大家都在等"发车"。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 2: Settle -->
+                <div class="flex flex-col md:flex-row gap-4 flow-arrow">
+                    <div class="md:w-16 flex-shrink-0 flex items-center justify-center">
+                        <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold">2</div>
+                    </div>
+                    <div class="flex-1 bg-white p-5 rounded-xl shadow-sm border border-green-200">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg text-green-700">结算锁定 (Settle) - <span class="text-sm font-normal text-gray-500">发车了！</span></h3>
+                                <p class="text-gray-600 text-sm mt-2">
+                                    时间到了，管理员按下"结算"按钮。系统会计算现在的抵押品够不够借这么多钱。
+                                </p>
+                            </div>
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">关键时刻</span>
+                        </div>
+                        
+                        <div class="mt-4 bg-gray-50 p-4 rounded-lg">
+                            <h4 class="text-sm font-bold text-gray-700 mb-2">系统在算什么？(代码逻辑翻译)</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="mb-1"><strong>1. 算总价：</strong></p>
+                                    <p class="text-gray-500">所有的抵押品现在值多少钱？</p>
+                                </div>
+                                <div>
+                                    <p class="mb-1"><strong>2. 算额度：</strong></p>
+                                    <p class="text-gray-500">实际能借多少钱 = 总价值 ÷ 抵押率</p>
+                                </div>
+                            </div>
+                            <div class="code-snippet">
+                                // 如果池子有钱也有人借<br>
+                                if (lendSupply > 0 && borrowSupply > 0) {<br>
+                                &nbsp;&nbsp;State = EXECUTION; // 状态变为"执行中"<br>
+                                } else {<br>
+                                &nbsp;&nbsp;State = UNDONE; //没人玩，流局<br>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Execution & Liquidate -->
+                <div class="flex flex-col md:flex-row gap-4 flow-arrow">
+                    <div class="md:w-16 flex-shrink-0 flex items-center justify-center">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold">3</div>
+                    </div>
+                    <div class="flex-1 bg-white p-5 rounded-xl shadow-sm border border-red-200">
+                        <h3 class="font-bold text-lg text-red-700">执行与风险 (Execution & Liquidation)</h3>
+                        <p class="text-gray-600 text-sm mt-2">
+                            车在跑了。借款人拿着钱走了，抵押品锁在池子里。
+                            <br><strong>危险情况：</strong>如果抵押品（比如比特币）价格暴跌，跌破了安全线，系统就会触发<strong>"自动强平"</strong>（见第4节详情）。
+                        </p>
+
+                        <div class="mt-4 border-t pt-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-exclamation-triangle text-orange-500"></i>
+                                <span class="font-bold text-gray-700">清算逻辑</span>
+                            </div>
+                            <div class="code-snippet">
+                                // 卖掉抵押品换回现金<br>
+                                UniswapV2Router.swapExactTokensForTokens(...)<br>
+                                // 扣除利息和手续费<br>
+                                State = LIQUIDATION; // 状态变为"已清算"
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Finish -->
+                <div class="flex flex-col md:flex-row gap-4 last-flow">
+                    <div class="md:w-16 flex-shrink-0 flex items-center justify-center">
+                        <div class="w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-bold">4</div>
+                    </div>
+                    <div class="flex-1 bg-white p-5 rounded-xl shadow-sm">
+                        <h3 class="font-bold text-lg text-gray-700">结束 (Finish)</h3>
+                        <p class="text-gray-600 text-sm mt-2">
+                            一切顺利的话，借款人还钱，拿回抵押品。出借人拿回本金+利息。池子关闭。
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section 6: 关键术语词典 -->
+        <section>
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-purple-500 pl-4">6. 关键术语速查</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-lg shadow-sm text-center">
+                    <div class="text-purple-600 font-bold mb-1">MartgageRate</div>
+                    <div class="text-xs text-gray-500">抵押率</div>
+                    <div class="text-sm mt-2 text-gray-700">我有100块金子，能借多少钱？这由抵押率决定。</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm text-center">
+                    <div class="text-purple-600 font-bold mb-1">Oracle</div>
+                    <div class="text-xs text-gray-500">预言机</div>
+                    <div class="text-sm mt-2 text-gray-700">系统的"眼睛"，负责盯着外面的市场价格。</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm text-center">
+                    <div class="text-purple-600 font-bold mb-1">MultiSig</div>
+                    <div class="text-xs text-gray-500">多签钱包</div>
+                    <div class="text-sm mt-2 text-gray-700">要把钱转走，需要3把钥匙里的2把同时拧动。</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm text-center">
+                    <div class="text-purple-600 font-bold mb-1">DebtToken</div>
+                    <div class="text-xs text-gray-500">债务代币</div>
+                    <div class="text-sm mt-2 text-gray-700">借款人的"欠条"，证明你欠了系统多少钱。</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="text-center text-gray-400 py-8 text-sm">
+        <p>Based on PledgeV2 Architecture Analysis Document</p>
+    </footer>
+
+</body>
+</html>

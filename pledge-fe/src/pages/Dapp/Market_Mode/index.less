@@ -1,0 +1,163 @@
+.dapp_mode_page {
+  max-width: 1280px;
+  margin: 0 auto;
+
+  .ant-empty {
+    box-sizing: border-box;
+    padding: 130px 0 117px;
+    color: #b5b3cc;
+    font-size: 14px;
+    line-height: 21px;
+    background: #fff;
+    border: 1px solid #e6e6eb;
+    border-radius: 20px;
+
+    .emptybutton {
+      box-sizing: border-box;
+      color: rgba(93, 82, 255, 1);
+      background: rgba(93, 82, 255, 0.1);
+      border: 1px solid #5d52ff;
+      border-radius: 10px;
+    }
+
+    .emptybutton:hover {
+      box-sizing: border-box;
+      background: rgba(93, 82, 255, 0.2);
+      border: 1px solid #5d52ff;
+      border-radius: 10px;
+    }
+  }
+
+  .prtfolioList_title {
+    display: flex;
+    justify-content: space-between;
+    margin: 48px 0 24px;
+    color: #8b89a3;
+    font-size: 14px;
+    line-height: 21px;
+  }
+
+  h3 {
+    margin: 0 12px 0 0;
+    color: #262533;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 36px;
+  }
+
+  .access {
+    display: grid;
+    grid-column-gap: 40px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .all_tab {
+    display: block;
+  }
+
+  .media_tab {
+    display: none;
+  }
+
+  .claim_list {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid #e6e6eb;
+    border-radius: 20px;
+
+    p:nth-child(1) {
+      display: flex;
+      align-items: center;
+    }
+
+    p {
+      display: block;
+      margin: 0;
+      font-size: 18px;
+
+      span {
+        font-size: 18px;
+      }
+
+      .claim_list_title {
+        display: none;
+      }
+    }
+
+    .img2 {
+      top: 40px;
+    }
+
+    .components_button {
+      width: 107px;
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+}
+@media only screen and (max-width: 576px) {
+  display: block;
+
+  .dapp_mode_page {
+    display: block;
+    margin: 0 auto;
+
+    .ant-empty {
+      border: none;
+    }
+
+    .prtfolioList_title {
+      justify-content: space-around;
+    }
+
+    .all_tab {
+      display: none;
+    }
+
+    .media_tab {
+      display: block;
+    }
+
+    .claim_list {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      width: 343px;
+      height: 327px;
+      margin: 8px auto;
+
+      p {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+
+        .claim_list_title {
+          display: block;
+          color: #8b89a3;
+          font-size: 14px;
+          line-height: 21px;
+        }
+      }
+
+      .components_button {
+        width: 100%;
+      }
+
+      .img2 {
+        top: 36px;
+        left: 32px;
+      }
+    }
+
+    .access {
+      display: grid;
+      grid-column-gap: 40px;
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+}

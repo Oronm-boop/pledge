@@ -1,0 +1,80 @@
+.claim_time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .component_time {
+    display: flex;
+    align-items: center;
+
+    .claim_time_title {
+      color: #8b89a3;
+      font-size: 12px;
+      line-height: 18px;
+      text-align: center;
+    }
+
+    .claim_time_time {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 112px;
+      margin-bottom: 10px;
+      margin-left: 4px;
+      color: #8b89a3;
+
+      span {
+        display: block;
+        height: 18px;
+        padding: 0 4px;
+        color: #5d52ff;
+        font-size: 12px;
+        line-height: 20px;
+        background: rgba(93, 82, 255, 0.1);
+        border-radius: 2px;
+      }
+    }
+  }
+
+  .claim_button {
+    display: block;
+
+    .components_button {
+      width: 270px;
+      height: 40px;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 40px;
+    }
+
+    .btn_disabled {
+      color: #8b89a3;
+    }
+  }
+}
+@media only screen and (max-width: 576px) {
+  display: block;
+
+  .claim_time {
+    display: block;
+
+    .component_time {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 0 16px;
+
+      .claim_time_title,
+      .claim_time_time {
+        margin: 0;
+      }
+
+      .component_time_span {
+        display: block;
+        width: 55px;
+        height: 1px;
+        background: #e6e6eb;
+      }
+    }
+  }
+}

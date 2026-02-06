@@ -1,0 +1,71 @@
+.components_button {
+  display: block;
+  box-sizing: border-box;
+  height: 48px;
+  padding: 0 24px;
+  line-height: 48px;
+  text-align: center;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  #loading {
+    color: #fff !important;
+  }
+
+  &.type_paramy {
+    color: #fff;
+    background: #5d52ff;
+
+    &:hover {
+      background: fade(#4940cc, 80%);
+    }
+  }
+
+  &.type_default {
+    color: #5d52ff;
+    background: #fff;
+
+    &:hover {
+      background: fade(#fff, 80%);
+    }
+  }
+
+  &.rad_leftBottom {
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 0;
+  }
+
+  &.rad_leftTop {
+    border-top-left-radius: 0;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+  }
+
+  &.rad_rightTop {
+    border-top-left-radius: 30px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+  }
+
+  &.rad_rightBottom {
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 30px;
+  }
+
+  &.btn_disabled {
+    color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.1);
+    cursor: no-drop;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
+}

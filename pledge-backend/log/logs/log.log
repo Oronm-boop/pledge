@@ -1,0 +1,2 @@
+{"level":"info","time":"2026-02-06T00:17:25.804+0800","line":"E:/1pledge/ProjectBreakdown-Pledge-main/pledge-backend/db/mysql.go:16","msg":"Init Mysql","serviceName":"pledge"}
+{"level":"info","time":"2026-02-06T00:17:25.847+0800","line":"E:/1pledge/ProjectBreakdown-Pledge-main/pledge-backend/db/redis.go:15","msg":"Init Redis","serviceName":"pledge"}

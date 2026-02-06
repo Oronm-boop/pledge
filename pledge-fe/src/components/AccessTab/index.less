@@ -1,0 +1,101 @@
+.access_tab {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 20px 0;
+  padding: 28px;
+  background: #fff;
+  border: 1px solid #e6e6eb;
+  border-radius: 20px;
+
+  .access_title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+
+    h2 {
+      margin: 0 0 0 10px;
+      color: #262533;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 27px;
+    }
+  }
+
+  .access_value {
+    color: #262533;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 21px;
+    text-align: right;
+  }
+
+  .access_num {
+    margin: 0;
+    margin-bottom: 32px;
+    color: #262533;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 36px;
+  }
+
+  .statemask {
+    width: 344px;
+    height: 59px;
+    margin-bottom: 32px;
+    padding: 12px 62px;
+    color: #5d52ff;
+    font-size: 12px;
+    line-height: 18px;
+    text-align: center;
+    background: rgba(93, 82, 255, 0.05);
+    border-radius: 10px;
+  }
+
+  .access_token {
+    color: #8b89a3;
+    font-size: 14px;
+    line-height: 21px;
+  }
+
+  .access_list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    span {
+      margin: 0;
+    }
+  }
+}
+@media only screen and (max-width: 576px) {
+  display: block;
+
+  div {
+    display: block;
+
+    .access_tab {
+      width: 343px;
+      margin: 10px auto;
+
+      .statemask {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100% !important;
+        height: 161px;
+      }
+
+      .access_num {
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 24px;
+      }
+
+      .access_token {
+        font-size: 14px;
+        line-height: 21px;
+      }
+    }
+  }
+}

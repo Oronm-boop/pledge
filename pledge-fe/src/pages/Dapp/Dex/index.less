@@ -1,0 +1,223 @@
+.dapp-layout {
+  display: block;
+
+  .landingbox_title,
+  .landingbox_info {
+    margin: 0;
+  }
+}
+
+.dapp_Dex {
+  display: block;
+  max-width: 1280px;
+  margin: 0 auto;
+
+  .ant-tabs-top > .ant-tabs-nav::before {
+    display: none;
+  }
+
+  .ant-tabs {
+    width: 1200px;
+    margin: 0 auto;
+
+    .swap_tab {
+      box-sizing: border-box;
+      width: 420px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 20px;
+
+      .swap_title {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        color: #262533;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+
+        span {
+          font-size: 16px;
+        }
+
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      .swap_input {
+        box-sizing: border-box;
+        height: 92px;
+        padding: 12px 16px 16px;
+        background: #fff;
+        border: 1px solid #e6e6eb;
+        border-radius: 12px;
+
+        .ant-input-number-handler-wrap {
+          display: none;
+        }
+
+        .ant-input-number-group-addon {
+          background-color: transparent;
+          border: 0;
+        }
+
+        input {
+          padding: 0;
+          font-weight: 600;
+          font-size: 24px;
+        }
+      }
+
+      .components_button {
+        top: 599px;
+        left: 770px;
+        width: 380px;
+        height: 56px;
+        color: #5d52ff;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 56px;
+        text-align: center;
+        background: rgba(93, 82, 255, 0.3);
+        border-radius: 15px;
+      }
+    }
+
+    .liquidity_tab {
+      display: block;
+      width: 640px;
+      margin: 0 auto;
+
+      .liquidity_title {
+        display: flex;
+        justify-content: space-between;
+        width: 640px;
+
+        p {
+          display: flex;
+          color: #262533;
+          font-weight: 500;
+          font-size: 20px;
+          line-height: 34px;
+
+          span {
+            display: block;
+            box-sizing: border-box;
+            width: 127px;
+            height: 34px;
+            margin-left: 10px;
+            color: #5d52ff;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 32px;
+            text-align: center;
+            border: 1px solid #5d52ff;
+            border-radius: 10px;
+          }
+
+          span:nth-child(2) {
+            color: #fff;
+            background: #5d52ff;
+          }
+        }
+      }
+    }
+  }
+
+  .dapp_coin_page {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .ant-tabs-nav-list {
+    display: flex;
+    justify-content: space-between;
+    width: 319px;
+    height: 56px;
+    margin: 0 auto;
+    margin-bottom: 32px;
+    background: #f5f5fa;
+    border-radius: 15px;
+
+    & > .ant-tabs-tab {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin: 4px;
+      color: #8b89a3 !important;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 30px;
+      border-radius: 11px;
+    }
+
+    .ant-tabs-tab-active {
+      background-color: #fff !important;
+    }
+
+    .ant-tabs-tab-btn {
+      color: #8b89a3;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 30px;
+      text-align: center;
+    }
+
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+      color: #262533;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 30px;
+      text-align: center;
+    }
+
+    .ant-tabs-ink-bar {
+      color: #fff !important;
+      background: none !important;
+    }
+  }
+}
+@media only screen and (max-width: 576px) {
+  display: block;
+
+  .ant-tabs {
+    display: block;
+
+    .ant-tabs-tab {
+      display: flex;
+
+      .ant-tabs-tab-btn {
+        font-size: 14px;
+        line-height: 22px;
+      }
+    }
+
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+      font-size: 14px !important;
+      line-height: 22px;
+    }
+
+    .ant-tabs-nav-list {
+      width: 174px;
+      height: 38px;
+      margin-left: 16px;
+    }
+  }
+}
+
+.seting_modal {
+  top: calc(50% - 160px);
+  border-radius: 16px;
+}
+
+.ant-modal-content {
+  border-radius: 16px;
+}
+
+.ant-input-number-handler-wrap {
+  display: none;
+}

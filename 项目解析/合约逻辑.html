@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PledgeV2 核心逻辑解析 (Contracts)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .card { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; transition: transform 0.2s; }
+        .card:hover { border-color: #3b82f6; }
+        .arrow-down { width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 10px solid #475569; margin: 10px auto; }
+        .code-snip { font-family: 'Fira Code', monospace; background-color: #0f172a; color: #a5b4fc; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; }
+        .phase-connector { position: absolute; top: 50%; left: 100%; width: 2rem; height: 2px; background-color: #475569; transform: translateY(-50%); }
+        .diagram-box { border: 2px dashed #475569; padding: 15px; border-radius: 8px; position: relative; }
+        
+        /* Flowchart Connector Lines */
+        .flow-line { height: 40px; width: 2px; background-color: #64748b; margin: 0 auto; }
+        
+        .highlight-text { color: #38bdf8; font-weight: bold; }
+        .danger-text { color: #f87171; font-weight: bold; }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+
+    <!-- Header -->
+    <header class="mb-12 text-center">
+        <h1 class="text-4xl font-bold text-blue-400 mb-4"><i class="fa-solid fa-network-wired mr-3"></i>PledgeV2 核心合约逻辑</h1>
+        <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+            解析 <span class="code-snip text-white">contracts/pledge/PledgePool.sol</span> 的资金流向心脏。<br>
+            从资金进场到结算清算的全生命周期图解。
+        </p>
+    </header>
+
+    <!-- Phase 1: Lifecycle Overview -->
+    <section class="mb-16">
+        <h2 class="text-2xl font-bold mb-6 border-l-4 border-blue-500 pl-4">1. 生命周期状态机 (State Machine)</h2>
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-800 p-6 rounded-xl relative overflow-hidden">
+            
+            <!-- Match -->
+            <div class="text-center z-10 w-full md:w-1/4">
+                <div class="bg-blue-900/50 border border-blue-500 p-4 rounded-lg shadow-lg shadow-blue-500/20">
+                    <h3 class="font-bold text-blue-300">MATCH (匹配期)</h3>
+                    <p class="text-xs text-slate-400 mt-2">资金与抵押物进场</p>
+                    <div class="mt-2 text-xs bg-slate-900 p-1 rounded">timestamp < settleTime</div>
+                </div>
+            </div>
+
+            <div class="hidden md:block text-2xl text-slate-500"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="md:hidden text-2xl text-slate-500"><i class="fa-solid fa-arrow-down"></i></div>
+
+            <!-- Execution -->
+            <div class="text-center z-10 w-full md:w-1/4">
+                <div class="bg-purple-900/50 border border-purple-500 p-4 rounded-lg shadow-lg shadow-purple-500/20">
+                    <h3 class="font-bold text-purple-300">EXECUTION (执行期)</h3>
+                    <p class="text-xs text-slate-400 mt-2">利息计算中 / 锁定</p>
+                    <div class="mt-2 text-xs bg-slate-900 p-1 rounded">Triggered by <span class="code-snip">settle()</span></div>
+                </div>
+            </div>
+
+            <div class="hidden md:block text-2xl text-slate-500"><i class="fa-solid fa-share-nodes"></i></div>
+            <div class="md:hidden text-2xl text-slate-500"><i class="fa-solid fa-arrow-down"></i></div>
+
+            <!-- Branch: Finish or Liquidate -->
+            <div class="flex flex-col gap-4 w-full md:w-1/4">
+                <div class="bg-green-900/50 border border-green-500 p-3 rounded-lg opacity-80">
+                    <h3 class="font-bold text-green-300 text-sm"><i class="fa-solid fa-flag-checkered mr-1"></i> FINISH (完成)</h3>
+                    <p class="text-[10px] text-slate-300">正常还款结束</p>
+                </div>
+                <div class="bg-red-900/50 border border-red-500 p-3 rounded-lg opacity-80">
+                    <h3 class="font-bold text-red-300 text-sm"><i class="fa-solid fa-skull-crossbones mr-1"></i> LIQUIDATION (清算)</h3>
+                    <p class="text-[10px] text-slate-300">抵押物不足</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Phase 2: Deposit Logic -->
+    <section class="mb-16 grid md:grid-cols-2 gap-8">
+        <div class="col-span-2">
+             <h2 class="text-2xl font-bold mb-6 border-l-4 border-yellow-500 pl-4">2. 资金进场 (MATCH 阶段)</h2>
+        </div>
+
+        <!-- Lender Side -->
+        <div class="card p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-yellow-400"><i class="fa-solid fa-piggy-bank mr-2"></i>做市商/存款人</h3>
+                <span class="code-snip">depositLend()</span>
+            </div>
+            <div class="diagram-box text-center bg-slate-800/50">
+                <div class="text-sm text-slate-300 mb-2">User Wallet</div>
+                <div class="py-2 px-4 bg-yellow-600/20 text-yellow-200 rounded-md inline-block mb-2">USDT / BUSD</div>
+                <div class="text-slate-500 text-xl"><i class="fa-solid fa-arrow-down"></i></div>
+                <div class="py-4 border-2 border-slate-600 rounded-lg mt-2 bg-slate-900">
+                    <div class="font-bold">PledgePool 合约</div>
+                    <div class="text-xs text-slate-400 mt-1">pool.lendSupply += amount</div>
+                    <div class="text-xs text-slate-400">Record: userLendInfo</div>
+                </div>
+            </div>
+            <ul class="mt-4 space-y-2 text-sm text-slate-300 list-disc pl-4">
+                <li>只有在 <span class="code-snip">settleTime</span> 之前可调用。</li>
+                <li>如果池子最终未匹配成功 (UNDONE)，可全额退款。</li>
+            </ul>
+        </div>
+
+        <!-- Borrower Side -->
+        <div class="card p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-blue-400"><i class="fa-solid fa-hand-holding-dollar mr-2"></i>借款人</h3>
+                <span class="code-snip">depositBorrow()</span>
+            </div>
+            <div class="diagram-box text-center bg-slate-800/50">
+                <div class="text-sm text-slate-300 mb-2">User Wallet</div>
+                <div class="py-2 px-4 bg-blue-600/20 text-blue-200 rounded-md inline-block mb-2">BTC / ETH (抵押物)</div>
+                <div class="text-slate-500 text-xl"><i class="fa-solid fa-arrow-down"></i></div>
+                <div class="py-4 border-2 border-slate-600 rounded-lg mt-2 bg-slate-900">
+                    <div class="font-bold">PledgePool 合约</div>
+                    <div class="text-xs text-slate-400 mt-1">pool.borrowSupply += amount</div>
+                    <div class="text-xs text-slate-400">Record: userBorrowInfo</div>
+                </div>
+            </div>
+            <ul class="mt-4 space-y-2 text-sm text-slate-300 list-disc pl-4">
+                <li>抵押物存入合约，尚未开始计算利息。</li>
+                <li>此时并未真正获得借款资金（需等待 settle）。</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Phase 3: The Heart - Settle -->
+    <section class="mb-16">
+        <h2 class="text-2xl font-bold mb-6 border-l-4 border-purple-500 pl-4">3. 结算核心 (Settle Logic)</h2>
+        <div class="card p-8 bg-gradient-to-br from-slate-900 to-purple-900/20">
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold mb-4">函数: <span class="code-snip">settle(uint256 _pid)</span></h3>
+                    <p class="mb-4">这是状态从 <span class="code-snip">MATCH</span> 转变为 <span class="code-snip">EXECUTION</span> 的关键点。它决定了多少资金被真正借出，多少需要退还。</p>
+                    
+                    <div class="bg-black/30 p-4 rounded-lg border border-slate-600">
+                        <h4 class="text-purple-400 font-bold mb-2"><i class="fa-solid fa-calculator mr-2"></i>计算逻辑</h4>
+                        <ol class="list-decimal pl-5 space-y-3 text-sm">
+                            <li>
+                                <strong>获取抵押物价值:</strong> <br>
+                                <span class="code-snip">Oracle.getPrices()</span> 获取 BTC 价格。
+                            </li>
+                            <li>
+                                <strong>计算最大可借额度 (Total Value):</strong> <br>
+                                <code>TotalValue = BorrowSupply * Price</code> <br>
+                                <code>ActualNeed = TotalValue / MartgageRate</code> (根据抵押率计算)
+                            </li>
+                            <li>
+                                <strong>匹配判断 (Compare):</strong>
+                                <ul class="list-disc pl-4 mt-1 text-slate-400">
+                                    <li>如果 <span class="highlight-text">池子钱够 (Lend > Need)</span>: 借款需求全部满足，多余的钱退还 Lender。</li>
+                                    <li>如果 <span class="highlight-text">池子钱不够 (Lend < Need)</span>: 池子里的钱全部借出，多余的抵押物退还 Borrower。</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="flex-1 flex flex-col justify-center items-center">
+                    <!-- Token Flow Diagram -->
+                    <div class="relative bg-slate-800 p-6 rounded-xl border border-slate-600 w-full">
+                        <div class="absolute top-0 right-0 p-2 text-xs text-slate-500">Token Generation</div>
+                        
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="text-center">
+                                <div class="text-yellow-400 font-bold">Lender</div>
+                                <div class="text-xs text-slate-400">获得凭证</div>
+                            </div>
+                            <div class="text-2xl text-slate-600"><i class="fa-solid fa-arrow-right"></i></div>
+                            <div class="bg-yellow-900/40 border border-yellow-600 px-3 py-1 rounded text-yellow-200 text-sm">
+                                <i class="fa-solid fa-coins mr-1"></i> spCoin (DebtToken)
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-700 my-4"></div>
+
+                        <div class="flex justify-between items-center">
+                            <div class="text-center">
+                                <div class="text-blue-400 font-bold">Borrower</div>
+                                <div class="text-xs text-slate-400">获得凭证</div>
+                            </div>
+                            <div class="text-2xl text-slate-600"><i class="fa-solid fa-arrow-right"></i></div>
+                            <div class="bg-blue-900/40 border border-blue-600 px-3 py-1 rounded text-blue-200 text-sm">
+                                <i class="fa-solid fa-file-contract mr-1"></i> jpCoin (DebtToken)
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-center mt-3 text-slate-400">spCoin/jpCoin 代表用户在池子中的有效份额，用于后续提款。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Phase 4: Finish vs Liquidate -->
+    <section class="mb-16">
+        <h2 class="text-2xl font-bold mb-6 border-l-4 border-slate-200 pl-4">4. 结局 (End Game)</h2>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Finish Path -->
+            <div class="card bg-slate-800 border-green-900/50">
+                <div class="p-4 bg-green-900/20 border-b border-green-900/50 flex justify-between items-center">
+                    <h3 class="font-bold text-green-400">路径 A: 正常结束 (Finish)</h3>
+                    <span class="text-xs bg-green-900 text-green-200 px-2 py-1 rounded">Time > EndTime</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-sm mb-4">通过 SwapRouter 将部分抵押物卖成 U，连本带利还给 Lender。</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">1</div>
+                            <div class="text-sm">计算利息: <span class="code-snip">Interest = Rate * Time * Amount</span></div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">2</div>
+                            <div class="text-sm">计算需偿还总额 (Lend + Interest)。</div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">3</div>
+                            <div class="text-sm border border-green-500/30 p-2 rounded bg-green-900/10 w-full">
+                                <strong>Auto-Swap:</strong> <br>
+                                调用 <span class="code-snip">swapRouter</span> 卖出部分 BorrowToken (BTC) 换取 LendToken (USDT)。
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">4</div>
+                            <div class="text-sm">Lender 拿回本息，Borrower 拿回剩余抵押物。</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liquidation Path -->
+            <div class="card bg-slate-800 border-red-900/50">
+                <div class="p-4 bg-red-900/20 border-b border-red-900/50 flex justify-between items-center">
+                    <h3 class="font-bold text-red-400">路径 B: 强制清算 (Liquidate)</h3>
+                    <span class="text-xs bg-red-900 text-red-200 px-2 py-1 rounded">Price Drop</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-sm mb-4 text-red-300">当抵押物价格暴跌，为了保护 Lender 本金，触发清算。</p>
+                    
+                    <div class="bg-red-950/50 p-4 rounded border border-red-800 mb-4">
+                        <div class="text-xs text-red-400 uppercase font-bold mb-1">触发公式 (Threshold)</div>
+                        <code class="text-sm block text-slate-300">
+                            抵押物现值 < (借款本金 * (1 + 阈值系数))
+                        </code>
+                        <div class="mt-2 text-xs text-slate-500">
+                            PoolBaseInfo.autoLiquidateThreshold 定义了安全线。
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">1</div>
+                            <div class="text-sm">任何人都可调用 <span class="code-snip">liquidate()</span>。</div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">2</div>
+                            <div class="text-sm">立即执行 Swap：卖掉抵押物偿还 Lender 本息。</div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">3</div>
+                            <div class="text-sm text-slate-400">Borrower 损失大部分抵押物（仅剩残值）。</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center text-slate-500 text-sm mt-12 pb-12 border-t border-slate-800 pt-8">
+        <p>Pledge V2 Smart Contract Visualization</p>
+        <p class="mt-2">辅助合约: <span class="text-slate-400">DebtToken (ERC20), BscPledgeOracle (Chainlink/PriceMap)</span></p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+.dapp-layout {
+  display: block;
+
+  .landingbox_title,
+  .landingbox_info {
+    margin: 0;
+  }
+}
+
+.ant-tabs-top > .ant-tabs-nav::before {
+  display: none;
+}
+
+.dapp_coin_page {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.ant-tabs-nav-list {
+  display: flex;
+  justify-content: space-between;
+  width: 319px;
+  height: 56px;
+  background: #f5f5fa;
+  border-radius: 15px;
+
+  & > .ant-tabs-tab {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 4px;
+    color: #8b89a3 !important;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 30px;
+    border-radius: 11px;
+  }
+
+  .ant-tabs-tab-active {
+    background-color: #fff !important;
+  }
+
+  .ant-tabs-tab-btn {
+    color: #8b89a3;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    text-align: center;
+  }
+
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #262533;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 30px;
+    text-align: center;
+  }
+
+  .ant-tabs-ink-bar {
+    color: #fff !important;
+    background: none !important;
+  }
+}
+@media only screen and (max-width: 576px) {
+  display: block;
+
+  .ant-tabs {
+    display: block;
+
+    .ant-tabs-tab {
+      display: flex;
+
+      .ant-tabs-tab-btn {
+        font-size: 14px;
+        line-height: 22px;
+      }
+    }
+
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+      font-size: 14px !important;
+      line-height: 22px;
+    }
+
+    .ant-tabs-nav-list {
+      width: 174px;
+      height: 38px;
+      margin-left: 16px;
+    }
+
+    .coin_pool {
+      flex-direction: column-reverse;
+
+      .coin_pool_box2,
+      .coin_pool_box {
+        width: 343px;
+        margin: 10px auto;
+      }
+    }
+  }
+}

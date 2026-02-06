@@ -1,0 +1,92 @@
+.claim_list {
+  display: block;
+  margin: 10px 0;
+
+  .ant-statistic-content {
+    display: none;
+  }
+
+  .ant-collapse {
+    box-sizing: border-box;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+
+    .anticon {
+      margin-top: 15px;
+
+      & > svg {
+        color: #fff;
+      }
+    }
+
+    .ant-statistic-title {
+      color: #262533;
+      font-size: 16px;
+      line-height: 48px;
+    }
+  }
+
+  .ant-col-4 {
+    display: flex !important;
+    justify-content: center;
+  }
+
+  .order_box {
+    display: flex;
+    justify-content: space-around;
+
+    .order_list {
+      display: block;
+      width: 30%;
+
+      p {
+        color: #262533;
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 30px;
+      }
+
+      li {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding: 10px 16px;
+
+        span:nth-child(1) {
+          color: #8b89a3;
+          font-size: 16px;
+          line-height: 24px;
+        }
+
+        span:nth-child(2) {
+          color: #262533;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 24px;
+        }
+      }
+
+      li:nth-child(even) {
+        background: #f5f5fa;
+        border-radius: 10px;
+      }
+    }
+  }
+
+  .steps-action {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 70%;
+    margin-right: 10px;
+  }
+
+  .steps-content {
+    display: none;
+  }
+
+  .ant-steps-item-title {
+    color: transparent !important;
+  }
+}
