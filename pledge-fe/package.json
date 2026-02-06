@@ -4,8 +4,8 @@
   "description": "Pledge aims to be the crypto-asset lending platform for non-traders. ",
   "main": "index.js",
   "scripts": {
-    "dev": "export SET NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=development REACT_APP_CHAIN_ID='97' webpack serve  --config ./build/dev.js",
-    "build": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=production REACT_APP_CHAIN_ID='56' webpack --config ./build/pro.js",
+    "dev": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development REACT_APP_CHAIN_ID=97 webpack serve --config ./build/dev.js",
+    "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production REACT_APP_CHAIN_ID=56 webpack --config ./build/pro.js",
     "lint": "yarn run lint-eslint && yarn run lint-stylelint",
     "lint-eslint": "eslint -c .eslintrc.js --ext .js {src,build}/**/*.js",
     "lint-stylelint": "stylelint --config .stylelintrc.json src/**/*.{less,scss} --syntax scss",
